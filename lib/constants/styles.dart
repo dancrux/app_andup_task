@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
-
 class AppStyles {
   static const heading1 = TextStyle(
     fontWeight: FontWeight.w900,
@@ -12,7 +10,7 @@ class AppStyles {
 
   static const heading2 = TextStyle(
     fontWeight: FontWeight.w700,
-    fontSize: 27,
+    fontSize: 24,
     height: 1,
   );
 
