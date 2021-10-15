@@ -7,9 +7,9 @@ class AppStrings {
   static const title = 'Title';
   static const login = 'Login';
   static const signUp = 'Sign Up    ';
-  static const passwordHint = '*******';
+  static const passwordHint = 'Password';
   static const userNameHint = 'Enter your name';
-  static const emailHint = 'you@gmail.com';
+  static const emailHint = 'Enter Your Email';
   static const signUpWithGoogle = 'Sign Up With Google';
   static const continueText = 'Continue';
 

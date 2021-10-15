@@ -1,5 +1,11 @@
 import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/constants/styles.dart';
+import 'package:app_andup_task/utilities/size_config.dart';
+import 'package:app_andup_task/utilities/spacing.dart';
+import 'package:app_andup_task/view/authentication/customWidgets/continue_button.dart';
+import 'package:app_andup_task/view/authentication/customWidgets/google_button.dart';
+import 'package:app_andup_task/view/authentication/firebase_auth.dart';
+import 'package:app_andup_task/view/authentication/login_form.dart';
 import 'package:app_andup_task/view/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,11 +19,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebase();
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
-
+  bool isLoogedIn = false;
   bool _isProcessing = false;
 
   Future<FirebaseApp> _initializeFirebase() async {
@@ -38,27 +50,82 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          AppStrings.login,
-          style: AppStyles.heading1,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            AppStrings.login,
+            style: AppStyles.heading1,
+          ),
         ),
-      ),
-      body: FutureBuilder(
-        future: _initializeFirebase(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text('Error Initializing firebase');
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            return Column(children: const [Text('Login')]);
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
-    );
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Spacing.largeHeight(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: LoginForm(
+                    formKey: _formKey,
+                    emailTextController: _emailTextController,
+                    passwordTextController: _passwordTextController,
+                  ),
+                ),
+                Spacing.bigHeight(),
+                _isProcessing
+                    ? const Center(child: CircularProgressIndicator())
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            continueButton(() async {
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  _isProcessing = true;
+                                });
+                                User? user = await FirebaseAuthentication
+                                    .signInWithEmailPassword(
+                                        email: _emailTextController.text,
+                                        password: _passwordTextController.text,
+                                        context: context);
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+                                if (user != null) {
+                                  Navigator.pushNamed(
+                                      context, AppStrings.homeRoute);
+                                }
+                              }
+                            }, 16.0, AppStrings.continueText),
+                            SizedBox(
+                              height: getProportionateScreenHeight(23.0),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 43),
+                              child: createGoogleButton(() async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    _isProcessing = true;
+                                  });
+                                  User? user = await FirebaseAuthentication
+                                      .signInWithGoogle(context: context);
+                                  setState(() {
+                                    _isProcessing = false;
+                                  });
+                                  if (user != null) {
+                                    Navigator.pushNamed(
+                                        context, AppStrings.homeRoute);
+                                  }
+                                }
+                              }, AppStrings.signUpWithGoogle),
+                            )
+                          ],
+                        ),
+                      ),
+              ],
+            )));
   }
 }

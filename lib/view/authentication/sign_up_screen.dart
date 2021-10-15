@@ -4,7 +4,9 @@ import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/continue_button.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/google_button.dart';
+import 'package:app_andup_task/view/authentication/firebase_auth.dart';
 import 'package:app_andup_task/view/authentication/sign_up_form.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _nameTextController = TextEditingController();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
+  bool _isProcessing = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,29 +44,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   passwordTextController: _passwordTextController,
                   nameTextController: _nameTextController),
               Spacing.bigHeight(),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    continueButton(() {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamed(context, AppStrings.homeRoute);
-                      }
-                    }, 16.0, AppStrings.continueText),
-                    SizedBox(
-                      height: getProportionateScreenHeight(23.0),
+              _isProcessing
+                  ? const CircularProgressIndicator()
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          continueButton(() async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isProcessing = true;
+                              });
+                              User? user = await FirebaseAuthentication
+                                  .registerWithEmailPassword(
+                                      name: _nameTextController.text,
+                                      email: _emailTextController.text,
+                                      password: _passwordTextController.text,
+                                      context: context);
+                              setState(() {
+                                _isProcessing = false;
+                              });
+                              if (user != null) {
+                                Navigator.pushNamed(
+                                    context, AppStrings.homeRoute);
+                              }
+                            }
+                          }, 16.0, AppStrings.continueText),
+                          SizedBox(
+                            height: getProportionateScreenHeight(23.0),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 43),
+                            child: createGoogleButton(() async {
+                              if (_formKey.currentState!.validate()) {
+                                Navigator.pushNamed(
+                                    context, AppStrings.homeRoute);
+                              }
+                            }, AppStrings.signUpWithGoogle),
+                          )
+                        ],
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 43),
-                      child: createGoogleButton(() {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.pushNamed(context, AppStrings.homeRoute);
-                        }
-                      }, AppStrings.signUpWithGoogle),
-                    )
-                  ],
-                ),
-              ),
             ],
           ),
         ));
