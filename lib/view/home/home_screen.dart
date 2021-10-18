@@ -17,54 +17,61 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                AppStrings.homeTitle,
-                style: AppStyles.heading1,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppColors.neutralGrey.withOpacity(0.1),
-                        spreadRadius: 4,
-                        blurRadius: 7),
-                  ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  AppStrings.homeTitle,
+                  style: AppStyles.heading1,
                 ),
-                padding: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: SizedBox(
-                  height: getProportionateScreenHeight(75),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                        hintText: AppStrings.searchHint,
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Icon(
-                            Icons.search,
-                            color: AppColors.grey,
-                            size: 35,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.lightGrey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30)))),
-                  ),
-                ),
-              ),
-              Spacing.bigHeight(),
-              SingleChildScrollView(
-                child: Column(
+                Spacing.mediumHeight(),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.neutralGrey.withOpacity(0.1),
+                              spreadRadius: 4,
+                              blurRadius: 7),
+                        ],
+                      ),
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                      ),
+                      child: SizedBox(
+                        height: getProportionateScreenHeight(75),
+                        child: const TextField(
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: AppColors.lightGrey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                              hintText: AppStrings.searchHint,
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Icon(
+                                  Icons.search,
+                                  color: AppColors.grey,
+                                  size: 35,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: AppColors.lightGrey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30)))),
+                        ),
+                      ),
+                    ),
+                    Spacing.bigHeight(),
                     const Text(
                       AppStrings.famousBooks,
                       style: AppStyles.heading2,
@@ -118,9 +125,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     )
                   ],
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

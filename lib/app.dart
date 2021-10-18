@@ -14,6 +14,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: _theme(),
+      onGenerateRoute: _routeFactory(),
       home: const LoginScreen(),
     );
   }

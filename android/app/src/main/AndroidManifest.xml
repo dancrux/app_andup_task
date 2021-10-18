@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.app_andup_task">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
+  
         android:label="app_andup_task"
         android:icon="@mipmap/ic_launcher">
         <activity

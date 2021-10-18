@@ -10,8 +10,9 @@ class AppStrings {
   static const passwordHint = 'Password';
   static const userNameHint = 'Enter your name';
   static const emailHint = 'Enter Your Email';
-  static const signUpWithGoogle = 'Sign Up With Google';
+  static const signUpWithGoogle = 'Continue With Google';
   static const continueText = 'Continue';
+  static const newUserSignUp = 'New User? Sign up';
 
   // Routes
 

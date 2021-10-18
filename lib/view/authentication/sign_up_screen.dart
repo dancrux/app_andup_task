@@ -21,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _nameTextController = TextEditingController();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
+
   bool _isProcessing = false;
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   nameTextController: _nameTextController),
               Spacing.bigHeight(),
               _isProcessing
-                  ? const CircularProgressIndicator()
+                  ? const Center(child: CircularProgressIndicator())
                   : Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -76,7 +77,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 43),
                             child: createGoogleButton(() async {
-                              if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isProcessing = true;
+                              });
+                              User? user =
+                                  await FirebaseAuthentication.signInWithGoogle(
+                                      context: context);
+                              setState(() {
+                                _isProcessing = false;
+                              });
+                              if (user != null) {
                                 Navigator.pushNamed(
                                     context, AppStrings.homeRoute);
                               }

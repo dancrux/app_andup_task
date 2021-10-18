@@ -74,6 +74,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     passwordTextController: _passwordTextController,
                   ),
                 ),
+                Spacing.mediumHeight(),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, AppStrings.signUpRoute);
+                  },
+                  child: const Text(
+                    AppStrings.newUserSignUp,
+                    style: AppStyles.heading5,
+                  ),
+                ),
                 Spacing.bigHeight(),
                 _isProcessing
                     ? const Center(child: CircularProgressIndicator())
@@ -106,19 +116,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 43),
                               child: createGoogleButton(() async {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _isProcessing = true;
-                                  });
-                                  User? user = await FirebaseAuthentication
-                                      .signInWithGoogle(context: context);
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-                                  if (user != null) {
-                                    Navigator.pushNamed(
-                                        context, AppStrings.homeRoute);
-                                  }
+                                setState(() {
+                                  _isProcessing = true;
+                                });
+                                User? user = await FirebaseAuthentication
+                                    .signInWithGoogle(context: context);
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+                                if (user != null) {
+                                  Navigator.pushNamed(
+                                      context, AppStrings.homeRoute);
                                 }
                               }, AppStrings.signUpWithGoogle),
                             )
