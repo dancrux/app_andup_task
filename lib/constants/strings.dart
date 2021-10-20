@@ -14,7 +14,7 @@ class AppStrings {
   static const continueText = 'Continue';
   static const newUserSignUp = 'New User? Sign up';
   static const bookUrl =
-      'https://www.googleapis.com/books/v1/volumes?q=flowers&key=AIzaSyDVux4lBMmak0rqXFBm3fsOPq5AVjyFMdM';
+      'https://www.googleapis.com/books/v1/volumes?q=search+terms=full&key=AIzaSyDVux4lBMmak0rqXFBm3fsOPq5AVjyFMdM';
 
   // Routes
 

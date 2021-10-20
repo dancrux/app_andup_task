@@ -20,13 +20,33 @@ class Repository {
     }
   }
 
-  Future refreshList() async {
+  Future<void> refreshList() async {
     final response = await http.get(Uri.parse(AppStrings.bookUrl));
-    if (response.statusCode == 200) {
-      List jsonResult = json.decode(response.body);
 
-      return jsonResult.map((data) => Book.fromJson(data)).toList();
+    if (response.statusCode == 200) {
+      print("${response.statusCode} server stuff");
+      final jsonResult = json.decode(response.body);
+
+      List<Book>.from(
+          jsonResult['items'].map((data) => Book.fromJson(data)).toList());
     } else {
+      print("${response.statusCode} server stuff");
+      throw Exception('Failed to load list of books');
+    }
+  }
+
+  Future<List<Book>> searchApi(String searchTerm) async {
+    final response = await http.get(Uri.parse(
+        'https://www.googleapis.com/books/v1/volumes?q=$searchTerm=full&key=AIzaSyDVux4lBMmak0rqXFBm3fsOPq5AVjyFMdM'));
+
+    if (response.statusCode == 200) {
+      print("${response.statusCode} server stuff");
+      final jsonResult = json.decode(response.body);
+
+      return List<Book>.from(
+          jsonResult['items'].map((data) => Book.fromJson(data)).toList());
+    } else {
+      print("${response.statusCode} server stuff");
       throw Exception('Failed to load list of books');
     }
   }

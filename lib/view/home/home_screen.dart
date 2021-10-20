@@ -5,6 +5,7 @@ import 'package:app_andup_task/network/model/book.dart';
 import 'package:app_andup_task/network/repository.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
+import 'package:app_andup_task/view/bookDetail/detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,95 +28,114 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: const ScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                AppStrings.homeTitle,
-                style: AppStyles.heading1,
-              ),
-              Spacing.mediumHeight(),
-              Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppColors.neutralGrey.withOpacity(0.1),
-                        spreadRadius: 4,
-                        blurRadius: 7),
-                  ],
+      body: RefreshIndicator(
+        onRefresh: () => Repository().refreshList(),
+        child: SingleChildScrollView(
+          physics: const ScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  AppStrings.homeTitle,
+                  style: AppStyles.heading1,
                 ),
-                padding: const EdgeInsets.only(
-                  top: 20,
-                ),
-                child: SizedBox(
-                  height: getProportionateScreenHeight(75),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.lightGrey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
-                        hintText: AppStrings.searchHint,
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Icon(
-                            Icons.search,
-                            color: AppColors.grey,
-                            size: 35,
+                Spacing.mediumHeight(),
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: AppColors.neutralGrey.withOpacity(0.1),
+                          spreadRadius: 4,
+                          blurRadius: 7),
+                    ],
+                  ),
+                  padding: const EdgeInsets.only(
+                    top: 20,
+                  ),
+                  child: SizedBox(
+                    height: getProportionateScreenHeight(75),
+                    child: TextField(
+                      onChanged: (String searchTerm) =>
+                          _searchInput(searchTerm),
+                      decoration: const InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.lightGrey),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
+                          hintText: AppStrings.searchHint,
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Icon(
+                              Icons.search,
+                              color: AppColors.grey,
+                              size: 35,
+                            ),
                           ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.lightGrey),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30)))),
+                          filled: true,
+                          fillColor: Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: AppColors.lightGrey),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)))),
+                    ),
                   ),
                 ),
-              ),
-              Spacing.bigHeight(),
-              const Text(
-                AppStrings.famousBooks,
-                style: AppStyles.heading2,
-              ),
-              Spacing.mediumHeight(),
-              Flexible(
-                child: FutureBuilder<List<Book>>(
-                  future: bookList,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Book>? data = snapshot.data;
-                      return ListView.separated(
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
-                              height: getProportionateScreenHeight(14),
-                            );
-                          },
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: data!.length,
-                          itemBuilder: (context, index) => BookListItem(
-                                book: data[index],
-                                onClick: () {},
-                              ));
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('${snapshot.error}'));
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
+                Spacing.bigHeight(),
+                const Text(
+                  AppStrings.famousBooks,
+                  style: AppStyles.heading2,
                 ),
-              ),
-              Spacing.mediumHeight(),
-            ],
+                Spacing.mediumHeight(),
+                Flexible(
+                  child: FutureBuilder<List<Book>>(
+                    future: bookList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Book>? data = snapshot.data;
+                        return ListView.separated(
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                height: getProportionateScreenHeight(14),
+                              );
+                            },
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: data!.length,
+                            itemBuilder: (context, index) => BookListItem(
+                                  book: data[index],
+                                  onClick: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                BookDetailScreen(
+                                                    book: data[index])));
+                                  },
+                                ));
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('${snapshot.error}'));
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+                Spacing.mediumHeight(),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  _searchInput(String input) {
+    setState(() {
+      bookList = Repository().searchApi(input);
+    });
   }
 
   static SnackBar customSnackBar({required String content}) {
@@ -157,7 +177,15 @@ class BookListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Image(image: NetworkImage("${book.image}"))),
+            Expanded(
+                child: Hero(
+              tag: "${book.title}",
+              child: Image(
+                  fit: BoxFit.contain,
+                  image: NetworkImage(
+                    "${book.image}",
+                  )),
+            )),
             Spacing.smallWidth(),
             Expanded(
               child: Column(
