@@ -6,13 +6,15 @@ class AppStrings {
   static const author = 'Author';
   static const title = 'Title';
   static const login = 'Login';
-  static const signUp = 'Sign Up    ';
+  static const signUp = 'Sign Up';
   static const passwordHint = 'Password';
   static const userNameHint = 'Enter your name';
   static const emailHint = 'Enter Your Email';
   static const signUpWithGoogle = 'Continue With Google';
   static const continueText = 'Continue';
   static const newUserSignUp = 'New User? Sign up';
+  static const bookUrl =
+      'https://www.googleapis.com/books/v1/volumes?q=flowers&key=AIzaSyDVux4lBMmak0rqXFBm3fsOPq5AVjyFMdM';
 
   // Routes
 
