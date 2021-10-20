@@ -193,7 +193,7 @@ class BookListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text('${book.author}'),
-                  Text('${book.title}', style: AppStyles.heading5),
+                  Text('${book.title}', maxLines: 3, style: AppStyles.heading5),
                   Row(
                     children: [
                       const Icon(Icons.star_border_outlined),
