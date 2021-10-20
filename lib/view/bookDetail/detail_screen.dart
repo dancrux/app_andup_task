@@ -1,5 +1,6 @@
 import 'package:app_andup_task/constants/colors.dart';
 import 'package:app_andup_task/constants/styles.dart';
+import 'package:app_andup_task/network/firebase.dart';
 import 'package:app_andup_task/network/model/book.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
@@ -19,7 +20,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: buildAppBar(context, () => Navigator.pop(context)),
+      appBar: buildAppBar(context, () => Navigator.pop(context), widget.book),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -149,27 +150,41 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   }
 }
 
-AppBar buildAppBar(BuildContext context, Function backPressed) {
+AppBar buildAppBar(BuildContext context, Function backPressed, Book book) {
   return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 22),
-        child: Container(
-          height: getProportionateScreenHeight(45.0),
-          width: getProportionateScreenWidth(45.0),
-          decoration: const BoxDecoration(
-            color: AppColors.lightGrey,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            onPressed: () {
-              backPressed();
-            },
-            icon: SvgPicture.asset(
-              "assets/svgs/short_arrow_left.svg",
-            ),
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    leading: Padding(
+      padding: const EdgeInsets.only(left: 22),
+      child: Container(
+        height: getProportionateScreenHeight(45.0),
+        width: getProportionateScreenWidth(45.0),
+        decoration: const BoxDecoration(
+          color: AppColors.lightGrey,
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          onPressed: () {
+            backPressed();
+          },
+          icon: SvgPicture.asset(
+            "assets/svgs/short_arrow_left.svg",
           ),
         ),
-      ));
+      ),
+    ),
+    actions: [
+      IconButton(
+          onPressed: () async {
+            await FirebaseDao().saveFavourite(book);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Saved To Favourite")));
+          },
+          icon: const Icon(
+            Icons.favorite_outlined,
+            color: Colors.grey,
+          )),
+    ],
+  );
 }

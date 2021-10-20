@@ -73,4 +73,17 @@ class Book {
         amount: amount,
         pageCount: volumeInfo['pageCount']);
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'author': author,
+        'title': title,
+        'category': category,
+        'description': description,
+        'image': image,
+        'printType': printType,
+        'publisher': publisher,
+        'rating': rating,
+        'amount': amount,
+        'pageCount': pageCount,
+      };
 }
