@@ -7,6 +7,23 @@ class FirebaseDao {
   final CollectionReference collectionReference =
       FirebaseFirestore.instance.collection(AppStrings.firebaseCollection);
   Future<void> saveFavourite(Book book) async {
-    await collectionReference.add(book.toJson());
+    await collectionReference.doc(book.title).set(book.toJson());
+  }
+
+  Future<bool> checkIsFavourited(Book book) async {
+    bool isSaved = false;
+    try {
+      await collectionReference.doc(book.title).get().then((value) {
+        if (value.exists) {
+          isSaved = true;
+        } else {
+          isSaved = false;
+        }
+      });
+      return isSaved;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

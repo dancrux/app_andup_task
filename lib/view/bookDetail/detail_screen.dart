@@ -16,11 +16,32 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
+  // static late Future<bool> isFavourite;
+  Color favouriteButtonColor = Colors.grey;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // isFavourite = FirebaseDao().checkIsFavourited(widget.book);
+  //   // if (isFavourite) {
+  //   //   favouriteButtonColor = AppColors.primaryColor;
+  //   // }
+  // }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: buildAppBar(context, () => Navigator.pop(context), widget.book),
+      appBar: buildAppBar(context, () => Navigator.pop(context), () async {
+        // if (!isFavourite) {
+        await FirebaseDao().saveFavourite(widget.book);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Saved To Favourite")));
+        setState(() {
+          favouriteButtonColor = AppColors.primaryColor;
+        });
+        // }
+      }, widget.book),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -150,41 +171,54 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   }
 }
 
-AppBar buildAppBar(BuildContext context, Function backPressed, Book book) {
+AppBar buildAppBar(BuildContext context, Function backPressed,
+    Function saveToFavourite, Book book) {
   return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    leading: Padding(
-      padding: const EdgeInsets.only(left: 22),
-      child: Container(
-        height: getProportionateScreenHeight(45.0),
-        width: getProportionateScreenWidth(45.0),
-        decoration: const BoxDecoration(
-          color: AppColors.lightGrey,
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          onPressed: () {
-            backPressed();
-          },
-          icon: SvgPicture.asset(
-            "assets/svgs/short_arrow_left.svg",
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 22),
+        child: Container(
+          height: getProportionateScreenHeight(45.0),
+          width: getProportionateScreenWidth(45.0),
+          decoration: const BoxDecoration(
+            color: AppColors.lightGrey,
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            onPressed: () {
+              backPressed();
+            },
+            icon: SvgPicture.asset(
+              "assets/svgs/short_arrow_left.svg",
+            ),
           ),
         ),
       ),
-    ),
-    actions: [
-      IconButton(
-          onPressed: () async {
-            await FirebaseDao().saveFavourite(book);
-
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Saved To Favourite")));
+      actions: [
+        FutureBuilder(
+          future: FirebaseDao().checkIsFavourited(book),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return IconButton(
+                onPressed: () => saveToFavourite(),
+                icon: Icon(
+                  Icons.favorite_outlined,
+                  color: snapshot.data == true
+                      ? AppColors.primaryColor
+                      : Colors.grey,
+                ),
+              );
+            } else {
+              return SizedBox(
+                height: 5,
+                width: getProportionateScreenWidth(20),
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                ),
+              );
+            }
           },
-          icon: const Icon(
-            Icons.favorite_outlined,
-            color: Colors.grey,
-          )),
-    ],
-  );
+        )
+      ]);
 }
