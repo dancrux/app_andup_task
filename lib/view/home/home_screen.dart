@@ -138,14 +138,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  static SnackBar customSnackBar({required String content}) {
-    return SnackBar(
-      content: Text(
-        content,
-        style: AppStyles.bodyText1,
-      ),
-    );
-  }
+  // static SnackBar customSnackBar({required String content}) {
+  //   return SnackBar(
+  //     content: Text(
+  //       content,
+  //       style: AppStyles.bodyText1,
+  //     ),
+  //   );
+  // }
 }
 
 class BookListItem extends StatelessWidget {
@@ -180,11 +180,13 @@ class BookListItem extends StatelessWidget {
             Expanded(
                 child: Hero(
               tag: "${book.title}",
-              child: Image(
-                  fit: BoxFit.contain,
-                  image: NetworkImage(
-                    "${book.image}",
-                  )),
+              child: Image.network(
+                "${book.image}",
+                fit: BoxFit.contain,
+                errorBuilder: (context, exception, stackTrace) {
+                  return const Text("image unavailable");
+                },
+              ),
             )),
             Spacing.smallWidth(),
             Expanded(

@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
-  bool isLoogedIn = false;
+
   bool _isProcessing = false;
 
   Future<FirebaseApp> _initializeFirebase() async {

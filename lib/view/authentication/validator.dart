@@ -32,4 +32,15 @@ class Validator {
 
     return null;
   }
+
+  static String? validateConfirmPassword(
+      {required String firstPassword, required String secondPassword}) {
+    if (firstPassword.isEmpty) {
+      return 'Password can\'t be empty';
+    } else if (firstPassword != secondPassword) {
+      return 'Password is incorrect';
+    }
+
+    return null;
+  }
 }

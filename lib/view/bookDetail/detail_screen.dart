@@ -1,4 +1,5 @@
 import 'package:app_andup_task/constants/colors.dart';
+import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/constants/styles.dart';
 import 'package:app_andup_task/network/firebase.dart';
 import 'package:app_andup_task/network/model/book.dart';
@@ -16,31 +17,31 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  // static late Future<bool> isFavourite;
   Color favouriteButtonColor = Colors.grey;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // isFavourite = FirebaseDao().checkIsFavourited(widget.book);
-  //   // if (isFavourite) {
-  //   //   favouriteButtonColor = AppColors.primaryColor;
-  //   // }
-  // }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.lightGreen.shade100,
       appBar: buildAppBar(context, () => Navigator.pop(context), () async {
-        // if (!isFavourite) {
-        await FirebaseDao().saveFavourite(widget.book);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Saved To Favourite")));
-        setState(() {
-          favouriteButtonColor = AppColors.primaryColor;
-        });
-        // }
+        bool checkFavorited =
+            await FirebaseDao().checkIsFavourited(widget.book);
+        if (checkFavorited) {
+          await FirebaseDao().deleteFromFavourites(widget.book);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Deleted Book From Favorites")));
+          setState(() {
+            favouriteButtonColor = Colors.grey;
+          });
+        } else {
+          await FirebaseDao().saveFavourite(widget.book);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Saved To Favourite")));
+          setState(() {
+            favouriteButtonColor = AppColors.primaryColor;
+          });
+        }
       }, widget.book),
       body: SingleChildScrollView(
         child: Padding(
@@ -152,10 +153,17 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                           ),
                           Spacing.mediumWidth(),
                           Hero(
-                              tag: "${widget.book.author}",
-                              child: Image(
-                                  fit: BoxFit.contain,
-                                  image: NetworkImage("${widget.book.image}")))
+                            tag: "${widget.book.title}",
+                            child: Image.network(
+                              "${widget.book.image}",
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, exception, stackTrace) {
+                                return const Text("image unavailable");
+                              },
+                            ),
+                            // fit: BoxFit.contain,
+                            // image: NetworkImage("${widget.book.image}"))
+                          )
                         ],
                       )
                     ],
@@ -171,8 +179,12 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   }
 }
 
-AppBar buildAppBar(BuildContext context, Function backPressed,
-    Function saveToFavourite, Book book) {
+AppBar buildAppBar(
+  BuildContext context,
+  Function backPressed,
+  Function saveToFavourite,
+  Book book,
+) {
   return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -210,15 +222,28 @@ AppBar buildAppBar(BuildContext context, Function backPressed,
                 ),
               );
             } else {
-              return SizedBox(
-                height: 5,
-                width: getProportionateScreenWidth(20),
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2.5,
+              return Container(
+                padding: const EdgeInsets.only(right: 10),
+                height: getProportionateScreenHeight(2),
+                width: getProportionateScreenWidth(30),
+                child: const Center(
+                  child: CircularProgressIndicator.adaptive(
+                    strokeWidth: 2.5,
+                  ),
                 ),
               );
             }
           },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: TextButton(
+              onPressed: () {},
+              child: Text(
+                AppStrings.viewFav,
+                style:
+                    AppStyles.heading6.copyWith(color: AppColors.primaryColor),
+              )),
         )
       ]);
 }

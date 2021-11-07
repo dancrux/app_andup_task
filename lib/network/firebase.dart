@@ -10,6 +10,10 @@ class FirebaseDao {
     await collectionReference.doc(book.title).set(book.toJson());
   }
 
+  Future<void> deleteFromFavourites(Book book) async {
+    await collectionReference.doc(book.title).delete();
+  }
+
   Future<bool> checkIsFavourited(Book book) async {
     bool isSaved = false;
     try {
