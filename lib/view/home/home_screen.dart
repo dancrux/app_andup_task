@@ -43,90 +43,91 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: AppStyles.heading1,
                 ),
                 Spacing.mediumHeight(),
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.neutralGrey.withOpacity(0.1),
-                          spreadRadius: 4,
-                          blurRadius: 7),
-                    ],
-                  ),
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                  ),
-                  child: SizedBox(
-                    height: getProportionateScreenHeight(75),
-                    child: TextField(
-                      onChanged: (String searchTerm) =>
-                          _searchInput(searchTerm),
-                      decoration: const InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.lightGrey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          hintText: AppStrings.searchHint,
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Icon(
-                              Icons.search,
-                              color: AppColors.grey,
-                              size: 35,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: AppColors.lightGrey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)))),
-                    ),
-                  ),
-                ),
+                buildCustomSearchBar(),
                 Spacing.bigHeight(),
                 const Text(
                   AppStrings.famousBooks,
                   style: AppStyles.heading2,
                 ),
                 Spacing.mediumHeight(),
-                Flexible(
-                  child: FutureBuilder<List<Book>>(
-                    future: bookList,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<Book>? data = snapshot.data;
-                        return ListView.separated(
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                height: getProportionateScreenHeight(14),
-                              );
-                            },
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: data!.length,
-                            itemBuilder: (context, index) => BookListItem(
-                                  book: data[index],
-                                  onClick: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                BookDetailScreen(
-                                                    book: data[index])));
-                                  },
-                                ));
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('${snapshot.error}'));
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ),
+                buildListOfBooks(),
                 Spacing.mediumHeight(),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Flexible buildListOfBooks() {
+    return Flexible(
+      child: FutureBuilder<List<Book>>(
+        future: bookList,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Book>? data = snapshot.data;
+            return ListView.separated(
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    height: getProportionateScreenHeight(14),
+                  );
+                },
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: data!.length,
+                itemBuilder: (context, index) => BookListItem(
+                      book: data[index],
+                      onClick: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                BookDetailScreen(book: data[index])));
+                      },
+                    ));
+          } else if (snapshot.hasError) {
+            return Center(child: Text('${snapshot.error}'));
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
+  }
+
+  Container buildCustomSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.neutralGrey.withOpacity(0.1),
+              spreadRadius: 4,
+              blurRadius: 7),
+        ],
+      ),
+      padding: const EdgeInsets.only(
+        top: 20,
+      ),
+      child: SizedBox(
+        height: getProportionateScreenHeight(75),
+        child: TextField(
+          onChanged: (String searchTerm) => _searchInput(searchTerm),
+          decoration: const InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.lightGrey),
+                  borderRadius: BorderRadius.all(Radius.circular(30))),
+              hintText: AppStrings.searchHint,
+              prefixIcon: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Icon(
+                  Icons.search,
+                  color: AppColors.grey,
+                  size: 35,
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.lightGrey),
+                  borderRadius: BorderRadius.all(Radius.circular(30)))),
         ),
       ),
     );
