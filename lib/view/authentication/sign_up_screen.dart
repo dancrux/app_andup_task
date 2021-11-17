@@ -1,10 +1,11 @@
 import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/constants/styles.dart';
+import 'package:app_andup_task/network/firebase_auth.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/continue_button.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/google_button.dart';
-import 'package:app_andup_task/view/authentication/firebase_auth.dart';
+
 import 'package:app_andup_task/view/authentication/sign_up_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: [
                           continueButton(() async {
                             if (_formKey.currentState!.validate()) {
+                              FocusScope.of(context).unfocus;
                               setState(() {
                                 _isProcessing = true;
                               });
@@ -77,6 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 43),
                             child: createGoogleButton(() async {
+                              FocusScope.of(context).unfocus;
                               setState(() {
                                 _isProcessing = true;
                               });

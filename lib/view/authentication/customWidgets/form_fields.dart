@@ -1,5 +1,6 @@
 import 'package:app_andup_task/constants/strings.dart';
-import 'package:app_andup_task/view/authentication/validator.dart';
+import 'package:app_andup_task/utilities/validator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

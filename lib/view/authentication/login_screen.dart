@@ -1,10 +1,10 @@
 import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/constants/styles.dart';
+import 'package:app_andup_task/network/firebase_auth.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/continue_button.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/google_button.dart';
-import 'package:app_andup_task/view/authentication/firebase_auth.dart';
 import 'package:app_andup_task/view/authentication/login_form.dart';
 import 'package:app_andup_task/view/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -93,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             continueButton(() async {
                               if (_formKey.currentState!.validate()) {
+                                FocusScope.of(context).unfocus;
                                 setState(() {
                                   _isProcessing = true;
                                 });
@@ -116,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 43),
                               child: createGoogleButton(() async {
+                                FocusScope.of(context).unfocus;
                                 setState(() {
                                   _isProcessing = true;
                                 });

@@ -3,7 +3,7 @@ import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
 import 'package:app_andup_task/view/authentication/customWidgets/form_fields.dart';
-import 'package:app_andup_task/view/authentication/login_form.dart';
+
 import 'package:flutter/material.dart';
 
 class SignUpForm extends StatefulWidget {
