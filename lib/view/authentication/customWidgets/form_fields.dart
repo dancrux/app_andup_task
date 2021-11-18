@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 TextFormField buildPasswordField(
-    TextEditingController passwordEditingController) {
+  TextEditingController passwordEditingController,
+) {
   return TextFormField(
     autovalidateMode: AutovalidateMode.onUserInteraction,
     obscureText: true,
@@ -27,7 +28,7 @@ TextFormField buildForgotPasswordField(
     validator: (value) => Validator.validateConfirmPassword(
         firstPassword: value ?? '',
         secondPassword: passwordEditingController.text),
-    controller: passwordEditingController,
+    // controller: passwordEditingController,
     decoration: InputDecoration(
         hintText: AppStrings.forgotPassword,
         icon: SvgPicture.asset(

@@ -12,6 +12,7 @@ class AppStrings {
   static const confrimPasswordHint = 'Confirm Password';
   static const userNameHint = 'Enter your name';
   static const emailHint = 'Enter Your Email';
+  static const email = 'Email';
   static const signUpWithGoogle = 'Continue With Google';
   static const continueText = 'Continue';
   static const viewFav = 'View Fav';
@@ -25,6 +26,7 @@ class AppStrings {
 
   static const loginRoute = '/';
   static const signUpRoute = '/sign_up';
+  static const forgotPassRoute = '/forgot_password';
   static const homeRoute = '/home';
   static const detailRoute = '/detail';
 }

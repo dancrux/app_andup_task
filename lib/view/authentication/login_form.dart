@@ -49,11 +49,9 @@ class _LoginFormState extends State<LoginForm> {
                 color: AppColors.formFieldLabel,
                 fontWeight: FontWeight.bold),
           ),
-          buildPasswordField(widget.passwordTextController),
-          Spacing.mediumHeight(),
-          Text(AppStrings.forgotPassword,
-              style:
-                  AppStyles.heading6.copyWith(color: AppColors.primaryColor)),
+          buildPasswordField(
+            widget.passwordTextController,
+          ),
           Spacing.mediumHeight(),
         ],
       ),

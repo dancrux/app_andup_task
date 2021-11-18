@@ -1,32 +1,24 @@
+import 'package:app_andup_task/auth_base_widget.dart';
 import 'package:app_andup_task/constants/strings.dart';
+import 'package:app_andup_task/view/authentication/forgot_password_screen.dart';
 import 'package:app_andup_task/view/authentication/login_screen.dart';
 import 'package:app_andup_task/view/authentication/sign_up_screen.dart';
 import 'package:app_andup_task/view/home/home_screen.dart';
-import 'package:app_andup_task/viewModels/auth_view_model.dart';
-import 'package:app_andup_task/viewModels/firebase_service_viewmodel.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AuthViewModel>(
-            create: (context) => AuthViewModel()),
-        ChangeNotifierProvider<FirebaseViewModel>(
-            create: (context) => FirebaseViewModel())
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: AppStrings.appName,
-        theme: _theme(),
-        onGenerateRoute: _routeFactory(),
-        home: const LoginScreen(),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: AppStrings.appName,
+      theme: _theme(),
+      onGenerateRoute: _routeFactory(),
+      home: const AuthBaseWidget(),
     );
   }
 }
@@ -41,6 +33,10 @@ RouteFactory _routeFactory() {
         break;
       case AppStrings.signUpRoute:
         screen = const SignUpScreen();
+
+        break;
+      case AppStrings.forgotPassRoute:
+        screen = const ForgotPasswordScreen();
 
         break;
       case AppStrings.homeRoute:
