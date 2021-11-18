@@ -45,7 +45,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   emailTextController: _emailTextController,
                   passwordTextController: _passwordTextController,
                   nameTextController: _nameTextController),
-              Spacing.bigHeight(),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, AppStrings.loginRoute);
+                },
+                child: const Text(
+                  AppStrings.oldUserSignin,
+                  style: AppStyles.bodyText1,
+                ),
+              ),
+              Spacing.largeHeight(),
               _isProcessing
                   ? const Center(child: CircularProgressIndicator())
                   : Center(

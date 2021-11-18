@@ -58,6 +58,13 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           buildPasswordField(widget.passwordTextController),
           Spacing.mediumHeight(),
+          Text(
+            AppStrings.forgotPassword,
+            style: TextStyle(
+                fontSize: getProportionatefontSize(11),
+                color: AppColors.formFieldLabel,
+                fontWeight: FontWeight.bold),
+          ),
           buildForgotPasswordField(widget.passwordTextController),
           Spacing.mediumHeight()
         ],

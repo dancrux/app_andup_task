@@ -25,7 +25,7 @@ class AppStyles {
 
   static const bodyText1 = TextStyle(
     fontWeight: FontWeight.w500,
-    fontSize: 11,
+    fontSize: 14,
   );
 
   static const bodyText2 = TextStyle(

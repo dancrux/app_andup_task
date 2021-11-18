@@ -29,7 +29,7 @@ TextFormField buildForgotPasswordField(
         secondPassword: passwordEditingController.text),
     controller: passwordEditingController,
     decoration: InputDecoration(
-        hintText: AppStrings.passwordHint,
+        hintText: AppStrings.forgotPassword,
         icon: SvgPicture.asset(
           "assets/svgs/loading.svg",
         )),

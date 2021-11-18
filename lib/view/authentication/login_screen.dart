@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeFirebase();
+    // _initializeFirebase();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -31,22 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordTextController = TextEditingController();
 
   bool _isProcessing = false;
-
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
-      );
-    }
-
-    return firebaseApp;
-  }
 
   @override
   Widget build(BuildContext context) {

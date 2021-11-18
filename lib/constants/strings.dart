@@ -17,6 +17,7 @@ class AppStrings {
   static const viewFav = 'View Fav';
   static const firebaseCollection = 'favourites';
   static const newUserSignUp = 'New User? Sign up';
+  static const oldUserSignin = 'Already have an account, Login';
   static const bookUrl =
       'https://www.googleapis.com/books/v1/volumes?q=search+terms=full&key=AIzaSyDVux4lBMmak0rqXFBm3fsOPq5AVjyFMdM';
 
