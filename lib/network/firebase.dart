@@ -10,24 +10,36 @@ class FirebaseDao {
     await collectionReference.doc(book.title).set(book.toJson());
   }
 
-  Future<void> deleteFromFavourites(Book book) async {
-    await collectionReference.doc(book.title).delete();
+  Stream<QuerySnapshot> retrieveFavouritesStream() {
+    return collectionReference.snapshots();
+    // await collectionReference.doc(book.title).set(book.toJson());
   }
 
-  Future<bool> checkIsFavourited(Book book) async {
-    bool isSaved = false;
-    try {
-      await collectionReference.doc(book.title).get().then((value) {
-        if (value.exists) {
-          isSaved = true;
-        } else {
-          isSaved = false;
-        }
-      });
-      return isSaved;
-    } catch (e) {
-      print(e);
-      return false;
-    }
+  Future<QuerySnapshot> retrieveFavourites() {
+    return collectionReference.get();
+    // await collectionReference.doc(book.title).set(book.toJson());
+  }
+
+  Future<void> deleteFromFavourites(Book book) {
+    return collectionReference.doc(book.title).delete();
+    // await collectionReference.doc(book.title).delete();
+  }
+
+  Future<DocumentSnapshot> checkIsFavourited(Book book) async {
+    // bool isSaved = false;
+    return collectionReference.doc(book.title).get();
+    // try {
+    //   await collectionReference.doc(book.title).get().then((value) {
+    //     if (value.exists) {
+    //       isSaved = true;
+    //     } else {
+    //       isSaved = false;
+    //     }
+    //   });
+    //   return isSaved;
+    // } catch (e) {
+    //   print(e);
+    //   return false;
+    // }
   }
 }

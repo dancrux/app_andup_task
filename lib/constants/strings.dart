@@ -15,6 +15,7 @@ class AppStrings {
   static const email = 'Email';
   static const signUpWithGoogle = 'Continue With Google';
   static const continueText = 'Continue';
+  static const favourites = 'Favourites';
   static const viewFav = 'View Fav';
   static const firebaseCollection = 'favourites';
   static const newUserSignUp = 'New User? Sign up';
@@ -29,4 +30,5 @@ class AppStrings {
   static const forgotPassRoute = '/forgot_password';
   static const homeRoute = '/home';
   static const detailRoute = '/detail';
+  static const favouritesRoute = '/favourites';
 }

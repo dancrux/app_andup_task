@@ -4,7 +4,7 @@ import 'package:app_andup_task/network/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-enum BookState { loading, favorite, notFavorite, error }
+enum BookState { loading, favorite, notFavorite, error, success }
 
 class FirebaseViewModel extends ChangeNotifier {
   final FirebaseDao _firebaseDao = FirebaseDao();
@@ -41,7 +41,22 @@ class FirebaseViewModel extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getFavoritesAsStream() {
-    return _firebaseDao.retrieveFavourites();
+    return _firebaseDao.retrieveFavouritesStream();
+  }
+
+  Future<List<Book>> getFavoriteBooks(BuildContext context) async {
+    _state = BookState.loading;
+    try {
+      var result = await _firebaseDao.retrieveFavourites();
+      book = List<Book>.from(result.docs.map((doc) => doc.data()).toList());
+      // List<Book>.from(result.docs.map((e) => Book.fromJson(e.data())).toList());
+      _state = BookState.success;
+    } catch (e) {
+      _state = BookState.error;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackBar(content: "An Error Occured $e"));
+    }
+    return book;
   }
 
   Future deleteFromFavorites(Book book, BuildContext context) async {

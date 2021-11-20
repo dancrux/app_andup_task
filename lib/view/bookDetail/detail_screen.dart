@@ -5,8 +5,10 @@ import 'package:app_andup_task/network/firebase.dart';
 import 'package:app_andup_task/network/model/book.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
+import 'package:app_andup_task/viewModels/firebase_service_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class BookDetailScreen extends StatefulWidget {
   const BookDetailScreen({Key? key, required this.book}) : super(key: key);
@@ -20,14 +22,20 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Color favouriteButtonColor = Colors.grey;
 
   @override
+  void initState() {
+    super.initState();
+    final bookProvider = Provider.of<FirebaseViewModel>(context);
+    bookProvider.checkIsFavorite(widget.book);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bookProvider = Provider.of<FirebaseViewModel>(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.lightGreen.shade100,
       appBar: buildAppBar(context, () => Navigator.pop(context), () async {
-        bool checkFavorited =
-            await FirebaseDao().checkIsFavourited(widget.book);
-        if (checkFavorited) {
+        if (bookProvider.state == BookState.favorite) {
           await FirebaseDao().deleteFromFavourites(widget.book);
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Deleted Book From Favorites")));
@@ -185,73 +193,111 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       ],
     );
   }
-}
 
-AppBar buildAppBar(
-  BuildContext context,
-  Function backPressed,
-  Function saveToFavourite,
-  Book book,
-) {
-  return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 22),
-        child: Container(
-          height: getProportionateScreenHeight(45.0),
-          width: getProportionateScreenWidth(45.0),
-          decoration: const BoxDecoration(
-            color: AppColors.lightGrey,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            onPressed: () {
-              backPressed();
-            },
-            icon: SvgPicture.asset(
-              "assets/svgs/short_arrow_left.svg",
+  AppBar buildAppBar(
+    BuildContext context,
+    Function backPressed,
+    Function saveToFavourite,
+    Book book,
+  ) {
+    return AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 22),
+          child: Container(
+            height: getProportionateScreenHeight(45.0),
+            width: getProportionateScreenWidth(45.0),
+            decoration: const BoxDecoration(
+              color: AppColors.lightGrey,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              onPressed: () {
+                backPressed();
+              },
+              icon: SvgPicture.asset(
+                "assets/svgs/short_arrow_left.svg",
+              ),
             ),
           ),
         ),
-      ),
-      actions: [
-        FutureBuilder(
-          future: FirebaseDao().checkIsFavourited(book),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return IconButton(
-                onPressed: () => saveToFavourite(),
-                icon: Icon(
-                  Icons.favorite_outlined,
-                  color: snapshot.data == true
-                      ? AppColors.primaryColor
-                      : Colors.grey,
-                ),
-              );
-            } else {
-              return Container(
-                padding: const EdgeInsets.only(right: 10),
-                height: getProportionateScreenHeight(2),
-                width: getProportionateScreenWidth(30),
-                child: const Center(
-                  child: CircularProgressIndicator.adaptive(
-                    strokeWidth: 2.5,
-                  ),
-                ),
-              );
-            }
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: TextButton(
-              onPressed: () {},
-              child: Text(
-                AppStrings.viewFav,
-                style:
-                    AppStyles.heading6.copyWith(color: AppColors.primaryColor),
-              )),
-        )
-      ]);
+        actions: [
+          buildWidgetByState(context, saveToFavourite),
+          // FutureBuilder(
+          //   future: FirebaseDao().checkIsFavourited(book),
+          //   builder: (context, snapshot) {
+          //     if (snapshot.hasData) {
+          //     } else {
+          //       return Container(
+          //         padding: const EdgeInsets.only(right: 10),
+          //         height: getProportionateScreenHeight(2),
+          //         width: getProportionateScreenWidth(30),
+          //         child: const Center(
+          //           child: CircularProgressIndicator.adaptive(
+          //             strokeWidth: 2.5,
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppStrings.favouritesRoute);
+                },
+                child: Text(
+                  AppStrings.viewFav,
+                  style: AppStyles.heading6
+                      .copyWith(color: AppColors.primaryColor),
+                )),
+          )
+        ]);
+  }
+
+  Widget buildWidgetByState(BuildContext context, Function saveToFavourite) {
+    return Consumer(builder: (context, FirebaseViewModel user, _) {
+      switch (user.state) {
+        case BookState.loading:
+          return Container(
+            padding: const EdgeInsets.only(right: 10),
+            height: getProportionateScreenHeight(2),
+            width: getProportionateScreenWidth(30),
+            child: const Center(
+              child: CircularProgressIndicator.adaptive(
+                strokeWidth: 2.5,
+              ),
+            ),
+          );
+
+        case BookState.favorite:
+          return IconButton(
+            onPressed: () => saveToFavourite(),
+            icon: const Icon(
+              Icons.favorite_outlined,
+              color: AppColors.primaryColor,
+            ),
+          );
+        case BookState.notFavorite:
+          return IconButton(
+            onPressed: () => saveToFavourite(),
+            icon: Icon(
+              Icons.favorite_outlined,
+              color: favouriteButtonColor,
+            ),
+          );
+
+        default:
+          return IconButton(
+            onPressed: () => saveToFavourite(),
+            icon: Icon(
+              Icons.favorite_outlined,
+              color: favouriteButtonColor,
+            ),
+          );
+      }
+    });
+  }
 }

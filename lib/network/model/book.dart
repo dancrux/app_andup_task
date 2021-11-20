@@ -73,6 +73,19 @@ class Book {
         amount: amount,
         pageCount: volumeInfo['pageCount']);
   }
+  factory Book.fromMap(Map snapshot) {
+    return Book(
+        author: snapshot['author'],
+        title: snapshot['title'],
+        category: snapshot['category'],
+        description: snapshot['description'],
+        image: snapshot['image'],
+        printType: snapshot['printType'],
+        publisher: snapshot['publisher'],
+        rating: snapshot['rating'],
+        amount: snapshot['amount'],
+        pageCount: snapshot['pageCount']);
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'author': author,

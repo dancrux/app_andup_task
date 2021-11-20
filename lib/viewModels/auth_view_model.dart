@@ -76,20 +76,26 @@ class AuthViewModel extends ChangeNotifier {
       } on FirebaseAuthException catch (e) {
         _authStatus = AuthStatus.unauthenticated;
         notifyListeners();
-        if (e.code == 'account-exists-with-different-credential') {
-          ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
-              content:
-                  'Account Mismatch please cross check, or retry with a different account'));
-        } else if (e.code == 'invalid-credential') {
-          ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
-              content:
-                  'Could not sign in with selected account, try a different account'));
+        switch (e.code) {
+          case 'account-exists-with-different-credential':
+            ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+                content:
+                    'Account Mismatch please cross check, or retry with a different account'));
+            break;
+          case 'invalid-credential':
+            ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+                content:
+                    'Could not sign in with selected account, try a different account'));
+            break;
+          default:
+            ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
+                content: 'An Unknown Error Occured while processing'));
         }
       } catch (e) {
         _authStatus = AuthStatus.unauthenticated;
         notifyListeners();
         ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
-            content: 'Could not proceed with sign in please retry'));
+            content: 'Could not p roceed with sign in please retry'));
       }
     }
     return user;

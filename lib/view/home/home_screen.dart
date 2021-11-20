@@ -6,7 +6,12 @@ import 'package:app_andup_task/network/repository.dart';
 import 'package:app_andup_task/utilities/size_config.dart';
 import 'package:app_andup_task/utilities/spacing.dart';
 import 'package:app_andup_task/view/bookDetail/detail_screen.dart';
+import 'package:app_andup_task/viewModels/auth_view_model.dart';
+import 'package:app_andup_task/viewModels/firebase_service_viewmodel.dart';
+import 'package:app_andup_task/viewModels/home_view_model.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,21 +22,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Book>> bookList;
+  List<Book>? book = List.empty();
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    bookList = Repository().getBooks();
+    final homeProvider = Provider.of<HomeViewModel>(context, listen: false);
+    bookList = homeProvider.getBooks(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeViewModel>(context);
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () => Repository().refreshList(),
+        onRefresh: () => homeProvider.getBooks(context),
         child: SingleChildScrollView(
-          physics: const ScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
             child: Column(
@@ -50,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: AppStyles.heading2,
                 ),
                 Spacing.mediumHeight(),
-                buildListOfBooks(),
+                buildListOfBooks(context),
                 Spacing.mediumHeight(),
               ],
             ),
@@ -60,37 +68,53 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Flexible buildListOfBooks() {
+  Flexible buildListOfBooks(BuildContext context) {
     return Flexible(
       child: FutureBuilder<List<Book>>(
-        future: bookList,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Book>? data = snapshot.data;
-            return ListView.separated(
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: getProportionateScreenHeight(14),
-                  );
-                },
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: data!.length,
-                itemBuilder: (context, index) => BookListItem(
-                      book: data[index],
-                      onClick: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                BookDetailScreen(book: data[index])));
-                      },
-                    ));
-          } else if (snapshot.hasError) {
-            return Center(child: Text('${snapshot.error}'));
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+          future: bookList,
+          builder: (context, snapshot) {
+            book = snapshot.data;
+            return buildWidgetByState(context, snapshot.error.toString());
+            // homeProvider.state == HomeState.loading
+            //     ? const Center(child: CircularProgressIndicator())
+            //     :
+          }),
     );
+  }
+
+  Widget buildWidgetByState(BuildContext context, String error) {
+    return Consumer(builder: (context, HomeViewModel user, _) {
+      switch (user.state) {
+        case HomeState.loading:
+          return const Center(child: CircularProgressIndicator());
+
+        case HomeState.completed:
+          return ListView.separated(
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  height: getProportionateScreenHeight(14),
+                );
+              },
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: book!.length,
+              itemBuilder: (context, index) => BookListItem(
+                    book: book![index],
+                    onClick: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              BookDetailScreen(book: book![index])));
+                    },
+                  ));
+        case HomeState.error:
+          return Text(error);
+        case HomeState.noContent:
+          return const Center(child: Icon(Icons.error));
+
+        default:
+          return const Center(child: Text('Something Went Wrong Please Retry'));
+      }
+    });
   }
 
   Container buildCustomSearchBar() {
@@ -134,19 +158,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _searchInput(String input) {
+    final homeProvider = Provider.of<HomeViewModel>(context);
     setState(() {
-      bookList = Repository().searchApi(input);
+      bookList = homeProvider.search(context, input);
     });
   }
 
-  // static SnackBar customSnackBar({required String content}) {
-  //   return SnackBar(
-  //     content: Text(
-  //       content,
-  //       style: AppStyles.bodyText1,
-  //     ),
-  //   );
-  // }
+  static SnackBar customSnackBar({required String content}) {
+    return SnackBar(
+      content: Text(
+        content,
+        style: AppStyles.bodyText1,
+      ),
+    );
+  }
 }
 
 class BookListItem extends StatelessWidget {

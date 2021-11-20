@@ -1,7 +1,10 @@
+// import 'dart:js';
+
 import 'package:app_andup_task/app.dart';
 
 import 'package:app_andup_task/viewModels/auth_view_model.dart';
 import 'package:app_andup_task/viewModels/firebase_service_viewmodel.dart';
+import 'package:app_andup_task/viewModels/home_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +23,8 @@ void main() {
       providers: [
         ChangeNotifierProvider<AuthViewModel>(
             create: (context) => AuthViewModel.instance()),
+        ChangeNotifierProvider<HomeViewModel>(
+            create: (context) => HomeViewModel()),
         ChangeNotifierProvider<FirebaseViewModel>(
             create: (context) => FirebaseViewModel())
       ],

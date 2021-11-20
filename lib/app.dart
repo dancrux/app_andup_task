@@ -3,6 +3,7 @@ import 'package:app_andup_task/constants/strings.dart';
 import 'package:app_andup_task/view/authentication/forgot_password_screen.dart';
 import 'package:app_andup_task/view/authentication/login_screen.dart';
 import 'package:app_andup_task/view/authentication/sign_up_screen.dart';
+import 'package:app_andup_task/view/bookDetail/favorites_screen.dart';
 import 'package:app_andup_task/view/home/home_screen.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,10 @@ RouteFactory _routeFactory() {
         break;
       case AppStrings.detailRoute:
         screen = const LoginScreen();
+
+        break;
+      case AppStrings.favouritesRoute:
+        screen = const FavoritesScreen();
 
         break;
       default:
