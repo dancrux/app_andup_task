@@ -14,7 +14,7 @@ enum AuthStatus {
 
 class AuthViewModel extends ChangeNotifier {
   static final GoogleSignIn googleSignIn = GoogleSignIn();
-  FirebaseAuth _firebaseAuth;
+  final FirebaseAuth _firebaseAuth;
   User? _user;
 
   AuthStatus _authStatus = AuthStatus.uninitialized;
@@ -34,20 +34,6 @@ class AuthViewModel extends ChangeNotifier {
       _authStatus = AuthStatus.authenticated;
     }
     notifyListeners();
-  }
-
-  Future signOut(BuildContext context) async {
-    try {
-      await googleSignIn.signOut();
-      await _firebaseAuth.signOut();
-      _authStatus = AuthStatus.unauthenticated;
-      notifyListeners();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          customSnackBar(content: 'Error Signing Out, Please Retry'));
-    }
-
-    return Future.delayed(Duration.zero);
   }
 
   static Future<FirebaseApp> initializeFirebase() async {
@@ -165,15 +151,19 @@ class AuthViewModel extends ChangeNotifier {
     return user;
   }
 
-  //  Future<void> signOut(BuildContext context) async {
-  //   try {
-  //     await googleSignIn.signOut();
-  //     await auth.signOut();
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //         customSnackBar(content: 'Error Signing Out, Please Retry'));
-  //   }
-  // }
+  Future signOut(BuildContext context) async {
+    try {
+      await googleSignIn.signOut();
+      await _firebaseAuth.signOut();
+      _authStatus = AuthStatus.unauthenticated;
+      notifyListeners();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          customSnackBar(content: 'Error Signing Out, Please Retry'));
+    }
+
+    return Future.delayed(Duration.zero);
+  }
 
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(

@@ -73,8 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: FutureBuilder<List<Book>>(
           future: bookList,
           builder: (context, snapshot) {
-            book = snapshot.data;
+            if (snapshot.hasData) {
+              book = snapshot.data;
+            }
             return buildWidgetByState(context, snapshot.error.toString());
+
             // homeProvider.state == HomeState.loading
             //     ? const Center(child: CircularProgressIndicator())
             //     :
@@ -107,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ));
         case HomeState.error:
-          return Text(error);
+          return Center(
+              child: Text('Something Went Wrong Please Retry $error'));
         case HomeState.noContent:
           return const Center(child: Icon(Icons.error));
 
@@ -158,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _searchInput(String input) {
-    final homeProvider = Provider.of<HomeViewModel>(context);
+    final homeProvider = Provider.of<HomeViewModel>(context, listen: false);
     setState(() {
       bookList = homeProvider.search(context, input);
     });

@@ -24,26 +24,27 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final bookProvider = Provider.of<FirebaseViewModel>(context);
+    final bookProvider = Provider.of<FirebaseViewModel>(context, listen: false);
     bookProvider.checkIsFavorite(widget.book);
   }
 
   @override
   Widget build(BuildContext context) {
     final bookProvider = Provider.of<FirebaseViewModel>(context);
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.lightGreen.shade100,
       appBar: buildAppBar(context, () => Navigator.pop(context), () async {
         if (bookProvider.state == BookState.favorite) {
-          await FirebaseDao().deleteFromFavourites(widget.book);
+          await bookProvider.deleteFromFavorites(widget.book, context);
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Deleted Book From Favorites")));
           setState(() {
             favouriteButtonColor = Colors.grey;
           });
         } else {
-          await FirebaseDao().saveFavourite(widget.book);
+          await bookProvider.saveToFavorites(widget.book, context);
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Saved To Favourite")));
           setState(() {

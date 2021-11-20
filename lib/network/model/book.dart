@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Book {
   final String? author,
       title,
@@ -73,15 +75,21 @@ class Book {
         amount: amount,
         pageCount: volumeInfo['pageCount']);
   }
-  factory Book.fromMap(Map snapshot) {
+
+  factory Book.fromSnapshot(DocumentSnapshot snapshot) {
+    final newBook = Book.fromMap(snapshot.data() as Map<String, dynamic>);
+    return newBook;
+  }
+
+  factory Book.fromMap(Map<dynamic, dynamic> snapshot) {
     return Book(
-        author: snapshot['author'],
-        title: snapshot['title'],
-        category: snapshot['category'],
-        description: snapshot['description'],
-        image: snapshot['image'],
-        printType: snapshot['printType'],
-        publisher: snapshot['publisher'],
+        author: snapshot['author'] ?? '',
+        title: snapshot['title'] ?? '',
+        category: snapshot['category'] ?? '',
+        description: snapshot['description'] ?? '',
+        image: snapshot['image'] ?? '',
+        printType: snapshot['printType'] ?? '',
+        publisher: snapshot['publisher'] ?? '',
         rating: snapshot['rating'],
         amount: snapshot['amount'],
         pageCount: snapshot['pageCount']);

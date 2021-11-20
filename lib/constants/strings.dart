@@ -7,6 +7,7 @@ class AppStrings {
   static const title = 'Title';
   static const login = 'Login';
   static const signUp = 'Sign Up';
+  static const logout = 'Log out';
   static const forgotPassword = 'Forgot Password';
   static const passwordHint = 'Password';
   static const confrimPasswordHint = 'Confirm Password';
